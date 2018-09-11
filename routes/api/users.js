@@ -6,6 +6,8 @@ const passport = require('passport');
 
 const User = require('../../Model/User');
 const secretKey = require('../../config/keys').secretKey;
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
 const router = express.Router();
 
 // @route Get api/users/test
@@ -19,9 +21,17 @@ router.get('/test', (req, res) => res.json({ msg: 'users router is work' }));
 // @access Public
 
 router.get('/register', (req, res) => {
+	const { errors, isValidate } = validateRegisterInput(req.body);
+
+	// Check validation
+	if (!isValidate) {
+		return res.status(400).json(errors);
+	}
+
 	User.findOne({ email: req.body.email }).then((user) => {
 		if (user) {
-			res.status(400).json({ email: 'Email already exists' });
+			errors.email = 'Email already exists';
+			res.status(400).json(errors);
 		} else {
 			const avatar = gravatar.url(req.body.email, {
 				s: '200', // Size
@@ -53,10 +63,19 @@ router.get('/register', (req, res) => {
 // @access Public
 
 router.get('/login', (req, res) => {
+	const { errors, isValidate } = validateRegisterInput(req.body);
+
+	// Check validation
+	if (!isValidate) {
+		return res.status(400).json(errors);
+	}
+
 	const email = req.body.email;
 	const password = req.body.password;
+
 	User.findOne({ email: email }).then((user) => {
-		if (!user) return res.status(404).json({ email: 'User not found' });
+		errors.email = 'User not found';
+		if (!user) return res.status(404).json(errors);
 		bcrypt.compare(password, user.password).then((isMatch) => {
 			if (isMatch) {
 				// user matched
@@ -78,7 +97,8 @@ router.get('/login', (req, res) => {
 					}
 				);
 			} else {
-				return res.status(400).json({ password: 'Password incorrect' });
+				errors.password = 'Password incorrect';
+				return res.status(400).json(errors);
 			}
 		});
 	});
@@ -87,9 +107,12 @@ router.get('/login', (req, res) => {
 // @route Post api/users/current
 // @desc Return current user
 // @access Private
-router.get('/current',passport.authenticate('jwt',{session:false}),(req,res)=>{
-  res.json({msg:"Success"})
-})
-
+router.get(
+	'/current',
+	passport.authenticate('jwt', { session: false }),
+	(req, res) => {
+		res.json({ msg: 'Success' });
+	}
+);
 
 module.exports = router;
