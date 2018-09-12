@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
 
+const validateProfileInput = require('../../validation/profile');
 // Load model Profile
 const Profile = require('../../Model/Profile');
 // Load model User
@@ -22,7 +23,8 @@ router.get(
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		const errors = {};
-		Profile.findOne({ user: req.user.id })
+    Profile.findOne({ user: req.user.id })
+      .populate('user',['name','avatar'])
 			.then((profile) => {
 				if (!profile) {
 					errors.noprofile = 'There is no profile for this users';
@@ -41,6 +43,12 @@ router.post(
 	'/',
 	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
+		const { errors, isValidate } = validateProfileInput(req.body);
+
+		// Check validation
+		if (!isValidate) {
+			return res.status(400).json(errors);
+		}
 		const profileFields = {};
 		profileFields.user = req.user.id;
 		if (req.body.handle) profileFields.handle = req.body.handle;
@@ -67,14 +75,14 @@ router.post(
 
 		Profile.findOne({ user: req.user.id }).then((profile) => {
 			if (profile) {
-        // Update
+				// Update
 				Profile.findOneAndUpdate(
 					{ user: req.user.id },
 					{ $set: profileFields },
 					{ new: true }
 				).then((profile) => res.json(profile));
 			} else {
-        // Create
+				// Create
 				Profile.findOne({ handle: profileFields.handle }).then(
 					(profile) => {
 						if (profile) {
