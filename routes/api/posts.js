@@ -90,11 +90,9 @@ router.post('/like/:id', (req, res) => {
 						(like) => like.user.toSring() === req.user.id
 					).length > 0
 				) {
-					return res
-						.status(400)
-						.json({
-							alreadyliked: 'You have already like this post'
-						});
+					return res.status(400).json({
+						alreadyliked: 'You have already like this post'
+					});
 				}
 
 				// Add like to post
@@ -119,11 +117,9 @@ router.post('/unlike/:id', (req, res) => {
 						(like) => like.user.toSring() === req.user.id
 					).length === 0
 				) {
-					return res
-						.status(400)
-						.json({
-							notliked: 'You have not already like this post'
-						});
+					return res.status(400).json({
+						notliked: 'You have not already like this post'
+					});
 				}
 
 				// Remove like from post
@@ -140,5 +136,68 @@ router.post('/unlike/:id', (req, res) => {
 			);
 	});
 });
+
+// @route Post api/posts/comment/:id
+// @desc Add Comment Post
+// @access Private
+router.post(
+	'/comment/:id',
+	passport.authenticate('jwt', { session: false }),
+	(req, res) => {
+		const { errors, isValidate } = validatePostInput(req.body);
+
+		// Check validation
+		if (!isValidate) {
+			return res.status(400).json(errors);
+		}
+
+		Post.findById(req.params.id)
+			.then((post) => {
+				const newComment = {
+					user: req.user.id,
+					text: req.body.text,
+					name: req.body.name,
+					avatar: req.body.avatar
+				};
+				post.comments.unshift(newComment);
+				post.save().then((post) => res.json(post));
+			})
+			.catch((err) =>
+				res.status(404).json({ postnotfound: 'No post found' })
+			);
+	}
+);
+
+// @route Delete api/posts/comment/:id/:comment_id
+// @desc Delete Comment Post
+// @access Private
+router.delete(
+	'/comment/:id/:comment_id',
+	passport.authenticate('jwt', { session: false }),
+	(req, res) => {
+		Post.findById(req.params.id)
+			.then((post) => {
+				if (
+					post.comments.filter(
+						(comment) =>
+							comment._id.toSring() === req.params.comment_id
+					).length === 0
+				) {
+					return res
+						.status(404)
+						.json({ commentnotexist: 'Comment does not exist' });
+				}
+				const removeIndex = post.comments
+					.map((item) => item._id.toSring())
+					.indexOf(req.params.comment_id);
+
+				post.comments.splice(removeIndex, 1);
+				post.save().then((post) => res.json(post));
+			})
+			.catch((err) =>
+				res.status(404).json({ postnotfound: 'No post found' })
+			);
+	}
+);
 
 module.exports = router;
