@@ -4,10 +4,10 @@
   "description": "sns made by MERN",
   "main": "server.js",
   "scripts": {
-    "client-install": "yarn install --prefix client",
+    "client-install": "cd client && yarn install",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "yarn start --prefix client",
+    "client": "cd client && yarn start",
     "dev": "concurrently \"yarn server\" \"yarn client\""
   },
   "repository": "https://github.com/nickyvan/react_sns",
