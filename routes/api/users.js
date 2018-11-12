@@ -20,9 +20,9 @@ router.get('/test', (req, res) => res.json({ msg: 'users router is work' }));
 // @desc Register User
 // @access Public
 
-router.get('/register', (req, res) => {
+router.post('/register', (req, res) => {
 	const { errors, isValidate } = validateRegisterInput(req.body);
-
+ 
 	// Check validation
 	if (!isValidate) {
 		return res.status(400).json(errors);
