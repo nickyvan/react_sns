@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../actions/authActions';
+import { clearCurrentProfile } from '../../actions/profileActions';
 class Navbar extends Component {
 	render() {
 		const { isAuthenticated, user } = this.props.auth;
@@ -72,5 +73,5 @@ const mapStateToProps = (state) => ({
 });
 export default connect(
 	mapStateToProps,
-	{ logoutUser }
+	{ logoutUser,clearCurrentProfile }
 )(Navbar);
