@@ -8,7 +8,7 @@ export const getCurrentProfile = () => dispatch =>{
     type: GET_PROFILE,
     payload: res.data
   })).catch(err=>dispatch({
-    type: GET_ERRORS,
+    type: GET_PROFILE,
     payload: {}
   })
     )
