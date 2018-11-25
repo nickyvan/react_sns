@@ -2,20 +2,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getCurrentProfile } from '../../actions/profileActions';
+import Spinner from '../common/Spinner';
 class Dashboard extends Component {
-	componentDidMount() {
-		this.props.getCurrentProfile();
-	}
-	render() {
-		return (
-			<div>
-				<h1>Dashboard</h1>
-			</div>
-		);
-	}
+  componentDidMount() {
+    this.props.getCurrentProfile();
+  }
+  render() {
+    const { user } = this.props.auth;
+    const { profile, loading } = this.props.profile;
+    let dashboardContent;
+    if (profile === null || loading) {
+      dashboardContent = (
+        <h4>
+          <Spinner />
+        </h4>
+      );
+    } else {
+      dashboardContent = <p>Hello</p>;
+    }
+    return (
+      <div className="dashboard">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <h1 className="display-4">Dashboard</h1>
+              {dashboardContent}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
-
+Dashboard.PropTypes = {
+  getCurrentProfile: PropTypes.func.isRequire,
+  profile: PropTypes.object.isRequire,
+  auth: PropTypes.object.isRequire
+};
+const mapStateToProps = (state) => ({
+  profile: state.profile,
+  auth: state.auth
+});
 export default connect(
-	null,
-	{ getCurrentProfile }
+  mapStateToProps,
+  { getCurrentProfile }
 )(Dashboard);
