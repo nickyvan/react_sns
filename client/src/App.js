@@ -21,7 +21,7 @@ if (localStorage.jwtToken) {
 	// set auth token header auth
 	setAuthToken(localStorage.jwtToken);
 	// decode token to get users data
-	const decoded = jwt_decode(localStorage.token);
+	const decoded = jwt_decode(localStorage.jwtToken);
 	// set current user
 	store.dispatch(setCurrentUser(decoded));
 	// check for expired token
