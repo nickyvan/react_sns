@@ -8,12 +8,12 @@ const initialState = {
 
 export default function(state = initialState, action) {
 	switch (action.type) {
-    case GET_PROFILE:
+    case PROFILE_LOADING:
 			return {
 				...state,
 				loading: true
       };
-    case PROFILE_LOADING:
+    case GET_PROFILE:
 			return {
 				...state,
         profile: action.payload,
