@@ -12,7 +12,7 @@ module.exports = function validateProfileInput(data) {
 		errors.handle = 'handle is required';
 	}
 	if (!Validator.isLength(data.handle, { min: 2, max: 40 })) {
-		errors.handle = 'Password must be between 2 and 40';
+		errors.handle = 'Handle must be between 2 and 40';
 	}
 	if (Validator.isEmpty(data.status)) {
 		errors.status = 'status is required';
