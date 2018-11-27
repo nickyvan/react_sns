@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getCurrentProfile } from '../../actions/profileActions';
+import { getCurrentProfile, deleteAccount } from '../../actions/profileActions';
 import Spinner from '../common/Spinner';
+import ProfileActions from './ProfileActions';
 class Dashboard extends Component {
 	componentDidMount() {
 		this.props.getCurrentProfile();
 	}
+	onDeleteClick = () => {
+		this.props.deleteAccount();
+	};
 	render() {
 		const { user } = this.props.auth;
 		const { profile, loading } = this.props.profile;
@@ -20,12 +24,32 @@ class Dashboard extends Component {
 			);
 		} else {
 			if (Object.keys(profile).length > 0) {
-				dashboardContent = <p>Todo:Show Profile</p>;
+				dashboardContent = (
+					<div>
+						<p className="lead text-muted">
+							Welcome
+							<Link to={`/profile/${profile.handle}`}>
+								{' '}
+								{user.name}
+							</Link>
+						</p>
+						<ProfileActions />
+						<div style={{ marginBottom: '60px' }} />
+						<button
+							className="btn btn-danger"
+							onClick={() => this.onDeleteClick()}>
+							Delete Your Account
+						</button>
+					</div>
+				);
 			} else {
 				dashboardContent = (
 					<div>
 						<p className="lead text-muted">Welcome {user.name}</p>
-						<p>You have not yet setup a profile,please add some info</p>
+						<p>
+							You have not yet setup a profile,please add some
+							info
+						</p>
 						<Link
 							to="/create-profile"
 							className="btn btn-lg btn-info">
@@ -60,5 +84,5 @@ const mapStateToProps = (state) => ({
 });
 export default connect(
 	mapStateToProps,
-	{ getCurrentProfile }
+	{ getCurrentProfile, deleteAccount }
 )(Dashboard);
