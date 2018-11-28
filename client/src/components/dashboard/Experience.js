@@ -18,7 +18,6 @@ class Experience extends Component {
 					) : (
 						<Moment format="YYYY/MM/DD">{exp.to}</Moment>
 					)}
-					{/* {exp.from}-{exp.to}-{'todo: format date'} */}
 				</td>
 				<td>
 					<button onClick={()=>this.onDeleteClick(exp._id)} className="btn btn-danger">Delete</button>
