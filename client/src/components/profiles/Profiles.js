@@ -2,18 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getProfiles } from '../../actions/profileActions';
 import Spinner from '../common/Spinner';
+import ProfileItem from './ProfileItem';
 class Profiles extends Component {
 	componentDidMount() {
 		this.props.getProfiles();
 	}
 	render() {
-		const { profile, loading } = this.props.profile;
+		const { profiles, loading } = this.props.profile;
 		let profileItems;
-		if (profile === null || loading) {
+		if (profiles === null || loading) {
 			profileItems = <Spinner />;
 		} else {
-			if (profile.length > 0) {
-        profileItems = <h1>profile here</h1>
+			if (profiles.length > 0) {
+				profileItems = profiles.map((profile) => (
+					<ProfileItem key={profile._id} profile={profile} />
+				));
 			} else {
 				profileItems = <h4>No profiles found...</h4>;
 			}
@@ -29,7 +32,7 @@ class Profiles extends Component {
 							<p className="lead text-center">
 								Browser and connect with developers
 							</p>
-              {profileItems}
+							{profileItems}
 						</div>
 					</div>
 				</div>
