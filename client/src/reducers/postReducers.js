@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER } from '../actions/types';
+import { ADD_POST } from '../actions/types';
 import isEmpty from '../validation/isEmpty';
 const initialState = {
   posts: [],
@@ -8,11 +8,10 @@ const initialState = {
 
 export default function(state = initialState, action) {
 	switch (action.type) {
-		case SET_CURRENT_USER:
+		case ADD_POST:
 			return {
 				...state,
-				isAuthenticated: !isEmpty(action.payload),
-				user: action.payload
+				posts:[action.payload,...state.posts]
 			};
 		default:
 			return state;
