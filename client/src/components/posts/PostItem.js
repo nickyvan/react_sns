@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import classnames from 'classnames';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-import {deletePost,addLike,removeLike} from '../../actions/postActions/';
+import {deletePost,addLike,removeLike} from '../../actions/postActions';
 class PostItem extends Component {
   onDeleteClick = (id) =>{
     this.props.deletePost(id)
@@ -22,7 +22,7 @@ class PostItem extends Component {
     }
   }
   render() {
-    const {post,auth} = this.props;
+    const {post,auth,showActions} = this.props;
     return (
       <div className="card card-body mb-3">
         <div className="row">
@@ -79,6 +79,9 @@ class PostItem extends Component {
       </div>
     )
   }
+}
+PostItem.defaultProps ={
+  showActions: true
 }
 const mapStateToProps = state =>({
   auth: state.auth
