@@ -4,6 +4,7 @@ import { getPost } from '../../actions/postActions';
 import {Link} from 'react-router-dom'
 import Spinner from '../common/Spinner';
 import PostItem from '../posts/PostItem';
+import CommentForm from './CommentForm'
 class Post extends Component {
   componentDidMount() {
     this.props.getPost(this.props.match.params.id);
@@ -29,6 +30,7 @@ class Post extends Component {
                 Back To Feed
               </Link>
               {postContent}
+              <CommentForm postId={post._id} ></CommentForm>
             </div>
           </div>
         </div>
